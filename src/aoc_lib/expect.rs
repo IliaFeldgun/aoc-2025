@@ -21,7 +21,7 @@ pub fn expect_my(day: i32, part: i32, calculated_result: i128) -> Option<String>
 }
 
 fn expect(expected: i128, calculated: i128) -> Option<String> {
-    println!("Expected: {expected}");
+    println!("Expected  : {expected}");
     if expected == calculated {
         None
     } else {

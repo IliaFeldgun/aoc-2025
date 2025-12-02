@@ -1,3 +1,5 @@
+use std::clone;
+
 use crate::aoc_lib::echo;
 use crate::aoc_lib::expect;
 use colored::Colorize;
@@ -21,6 +23,7 @@ pub fn main() {
         }
         Ok(result) => println!("{result}"),
     }
+    echo::echo_day(DAY, 2);
     match example(2) {
         Err(e) => {
             eprintln!("{e}");
@@ -81,9 +84,7 @@ fn run_part(part: i32, input: String) -> Option<i128> {
         for id_range in line.split(",") {
             println!();
             if !id_range.trim().is_empty() {
-                if part == 2 && let Some(sum) = validate_range2(id_range) {
-                    invalid_sum += sum;
-                } else if let Some(sum) = validate_range(id_range) {
+                if let Some(sum) = validate_range(part, id_range) {
                     invalid_sum += sum;
                 } else {
                     eprintln!("Failed to parse {id_range}")
@@ -94,11 +95,7 @@ fn run_part(part: i32, input: String) -> Option<i128> {
     Some(invalid_sum)
 }
 
-fn validate_range2(id_range: &str) -> Option<i128> {
-    validate_range(id_range)
-}
-
-fn validate_range(id_range: &str) -> Option<i128> {
+fn validate_range(part: i32, id_range: &str) -> Option<i128> {
     let mut invalid_sum = 0;
 
     if let Some(ids) = id_range.split_once("-") {
@@ -111,8 +108,14 @@ fn validate_range(id_range: &str) -> Option<i128> {
             }
             Ok(spreaded) => {
                 for id in spreaded {
-                    if is_valid(&id) {
+                    let is_valid = if part == 2 {
+                        is_valid_2(&id)
+                    } else {
+                        is_valid(&id)
+                    };
+                    if is_valid {
                     } else if let Some(iid) = parse_id(&id) {
+                        println!("invalid {id}");
                         invalid_sum += iid as i128;
                     } else {
                         eprint!("Failed to parse {id}");
@@ -135,23 +138,31 @@ fn is_valid(id: &str) -> bool {
     let mid = id.len() / 2;
     if let Some(left_slice) = id.get(..mid) {
         if let Some(right_slice) = id.get(mid..) {
-            for i in 0..mid {
-                if let Some(left) = left_slice.get(i..i + 1) {
-                    if let Some(right) = right_slice.get(i..i + 1) {
-                        if let Some(left_char) = left.chars().next() {
-                            if let Some(right_char) = right.chars().next() {
-                                if left_char != right_char {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
+            if left_slice == right_slice {
+                return false;
             }
         }
     }
-    println!("Invalid {id}");
-    false
+    true
+}
+
+fn is_valid_2(id: &str) -> bool {
+    if id.len() == 1 {
+        return true;
+    }
+    if !is_valid(id) {
+        return false;
+    }
+    let mut pattern = String::from("");
+    for (i, digit) in id.chars().enumerate() {
+        pattern.push(digit);
+        if id.replace(&pattern, "").is_empty() {
+            return false;
+        } else if i >= id.len() / 2 - 1 {
+            return true;
+        }
+    }
+    true
 }
 
 fn spread(start: String, end: String) -> Result<Vec<String>, String> {

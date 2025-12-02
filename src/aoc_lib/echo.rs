@@ -21,21 +21,21 @@ pub fn get_my_day(number: i32, _part: i32) -> Result<String, String> {
     load_file(&path)
 }
 
-pub fn get_day_example_result(number: i32, part: i32) -> Result<i32, String> {
+pub fn get_day_example_result(number: i32, part: i32) -> Result<i128, String> {
     let path = format!("./inputs/{number}/{part}/example.output.expect");
     get_result(path)
 }
 
-pub fn get_my_result(number: i32, part: i32) -> Result<i32, String> {
+pub fn get_my_result(number: i32, part: i32) -> Result<i128, String> {
     let path = format!("./inputs/{number}/{part}/my.output.expect");
     get_result(path)
 }
-fn get_result(path: String) -> Result<i32, String> {
+fn get_result(path: String) -> Result<i128, String> {
     match load_file(&path) {
         Err(e) => Err(e),
         Ok(result) => result
             .trim()
-            .parse::<i32>()
+            .parse::<i128>()
             .map_err(|e| format!("Failed to parse {result}: {e}")),
     }
 }
