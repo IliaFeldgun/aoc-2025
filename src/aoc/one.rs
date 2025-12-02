@@ -1,5 +1,3 @@
-use core::num;
-
 use crate::aoc_lib::echo;
 use crate::aoc_lib::expect;
 use colored::Colorize;
@@ -17,7 +15,10 @@ pub fn main() {
         Ok(result) => println!("{result}"),
     };
     match my(1) {
-        Err(e) => eprintln!("SKIPPING: {e}"),
+        Err(e) => {
+            eprintln!("{e}");
+            std::process::exit(1);
+        }
         Ok(result) => println!("{result}"),
     }
     match example(2) {
@@ -46,7 +47,7 @@ fn my(part: i32) -> Result<i32, String> {
             }
         }
     }
-    if let Some(err) = expect::expect_my(DAY, part, my_result) {
+    if let Some(err) = expect::expect_my(DAY, part, my_result as i128) {
         Err(err)
     } else {
         Ok(my_result)
@@ -66,7 +67,7 @@ fn example(part: i32) -> Result<i32, String> {
             }
         }
     }
-    if let Some(err) = expect::expect_example(DAY, part, my_result) {
+    if let Some(err) = expect::expect_example(DAY, part, my_result as i128) {
         Err(err)
     } else {
         Ok(my_result)
