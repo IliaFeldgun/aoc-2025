@@ -98,30 +98,19 @@ fn run_part(part: i32, input: String) -> Option<i32> {
 }
 
 fn rotate_2(dial: i32, delta: i32) -> (i32, i32) {
-    let mut normal_delta = delta % 100;
-    let mut zeroes = 0;
-    if delta == 0 {
-        return (dial, zeroes);
-    } else if normal_delta < 0 {
-        normal_delta += 100;
+    let (applied, mut zeroes) = rotate(dial, delta);
+    let mut extra_rotations = delta / 100;
+    if extra_rotations < 0 {
+        extra_rotations = -extra_rotations;
     }
-    zeroes += delta / 100;
-    if zeroes < 0 {
-        zeroes = -zeroes;
+    if extra_rotations > 0 {
+        zeroes += extra_rotations;
     }
-    if normal_delta == 0 {
-        (dial, zeroes)
-    } else {
-        let added_delta = dial + normal_delta;
-        let applied = added_delta % 100;
-        if (dial + delta > 100 && added_delta >= 100)
-            || applied == 0
-            || (dial != 0 && delta < 0 && applied > dial)
-        {
-            zeroes += 1;
-        }
-        (applied, zeroes)
+    if dial != 0 && applied != 0 && (delta < 0 && applied > dial || delta > 0 && applied < dial) {
+        // if dial != 0 && applied != 0 && ((dial + delta) / 100 == 1 || dial + delta < 0) {
+        zeroes += 1;
     }
+    (applied, zeroes)
 }
 
 fn rotate(dial: i32, delta: i32) -> (i32, i32) {
