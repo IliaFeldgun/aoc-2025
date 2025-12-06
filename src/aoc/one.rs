@@ -1,80 +1,14 @@
-use crate::aoc_lib::echo;
-use crate::aoc_lib::expect;
+use crate::aoc_lib::expect::Number;
+use crate::aoc_lib::main as aoc_main;
 use colored::Colorize;
 
 const DAY: i32 = 1;
 
 pub fn main() {
-    echo::echo_day(DAY, 1);
-    echo::echo_day_example(DAY, 1);
-    match example(1) {
-        Err(e) => {
-            eprintln!("{e}");
-            std::process::exit(1);
-        }
-        Ok(result) => println!("{result}"),
-    };
-    match my(1) {
-        Err(e) => {
-            eprintln!("{e}");
-            std::process::exit(1);
-        }
-        Ok(result) => println!("{result}"),
-    }
-    match example(2) {
-        Err(e) => {
-            eprintln!("{e}");
-            std::process::exit(1);
-        }
-        Ok(result) => println!("{result}"),
-    };
-    match my(2) {
-        Err(e) => eprintln!("SKIPPING: {e}"),
-        Ok(result) => println!("{result}"),
-    }
+    aoc_main::main(DAY, run_part);
 }
 
-fn my(part: i32) -> Result<i32, String> {
-    let my_result: i32;
-    match echo::get_my_day(DAY, part) {
-        Err(e) => return Err(e),
-        Ok(my) => {
-            if let Some(result) = run_part(part, my) {
-                println!("Got result: {result}");
-                my_result = result
-            } else {
-                return Err(String::from("No output from main logic"));
-            }
-        }
-    }
-    if let Some(err) = expect::expect_my(DAY, part, my_result as i128) {
-        Err(err)
-    } else {
-        Ok(my_result)
-    }
-}
-
-fn example(part: i32) -> Result<i32, String> {
-    let my_result: i32;
-    match echo::get_day_example(DAY, part) {
-        Err(e) => return Err(e),
-        Ok(example) => {
-            if let Some(result) = run_part(part, example) {
-                println!("Got result: {result}");
-                my_result = result
-            } else {
-                return Err(String::from("No output from main logic"));
-            }
-        }
-    }
-    if let Some(err) = expect::expect_example(DAY, part, my_result as i128) {
-        Err(err)
-    } else {
-        Ok(my_result)
-    }
-}
-
-fn run_part(part: i32, input: String) -> Option<i32> {
+fn run_part(part: i32, input: String) -> Option<Number> {
     let init = 50;
     let mut dial = init;
     let mut total_zeroes = 0;
@@ -95,7 +29,7 @@ fn run_part(part: i32, input: String) -> Option<i32> {
             }
         }
     }
-    Some(total_zeroes)
+    Some(Number::Int32(total_zeroes))
 }
 
 fn rotate_2(dial: i32, delta: i32) -> (i32, i32) {

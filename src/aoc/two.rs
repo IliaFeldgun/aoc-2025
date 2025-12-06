@@ -1,83 +1,13 @@
-use std::clone;
-
-use crate::aoc_lib::echo;
-use crate::aoc_lib::expect;
-use colored::Colorize;
+use crate::aoc_lib::expect::Number;
+use crate::aoc_lib::main as aoc_main;
 
 const DAY: i32 = 2;
 
 pub fn main() {
-    echo::echo_day(DAY, 1);
-    echo::echo_day_example(DAY, 1);
-    match example(1) {
-        Err(e) => {
-            eprintln!("{e}");
-            std::process::exit(1);
-        }
-        Ok(result) => println!("{result}"),
-    };
-    match my(1) {
-        Err(e) => {
-            eprintln!("{e}");
-            std::process::exit(1);
-        }
-        Ok(result) => println!("{result}"),
-    }
-    echo::echo_day(DAY, 2);
-    match example(2) {
-        Err(e) => {
-            eprintln!("{e}");
-            std::process::exit(1);
-        }
-        Ok(result) => println!("{result}"),
-    };
-    match my(2) {
-        Err(e) => eprintln!("SKIPPING: {e}"),
-        Ok(result) => println!("{result}"),
-    }
+    aoc_main::main(DAY, run_part);
 }
 
-fn my(part: i32) -> Result<i128, String> {
-    let my_result: i128;
-    match echo::get_my_day(DAY, part) {
-        Err(e) => return Err(e),
-        Ok(my) => {
-            if let Some(result) = run_part(part, my) {
-                println!("Got result: {result}");
-                my_result = result
-            } else {
-                return Err(String::from("No output from main logic"));
-            }
-        }
-    }
-    if let Some(err) = expect::expect_my(DAY, part, my_result) {
-        Err(err)
-    } else {
-        Ok(my_result)
-    }
-}
-
-fn example(part: i32) -> Result<i128, String> {
-    let my_result;
-    match echo::get_day_example(DAY, part) {
-        Err(e) => return Err(e),
-        Ok(example) => {
-            if let Some(result) = run_part(part, example) {
-                println!("Got result: {result}");
-                my_result = result
-            } else {
-                return Err(String::from("No output from main logic"));
-            }
-        }
-    }
-    if let Some(err) = expect::expect_example(DAY, part, my_result) {
-        Err(err)
-    } else {
-        Ok(my_result)
-    }
-}
-
-fn run_part(part: i32, input: String) -> Option<i128> {
+fn run_part(part: i32, input: String) -> Option<Number> {
     let mut invalid_sum = 0;
     println!("{invalid_sum}");
     for line in input.lines() {
@@ -92,7 +22,7 @@ fn run_part(part: i32, input: String) -> Option<i128> {
             }
         }
     }
-    Some(invalid_sum)
+    Some(Number::Int128(invalid_sum))
 }
 
 fn validate_range(part: i32, id_range: &str) -> Option<i128> {
