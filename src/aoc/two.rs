@@ -12,7 +12,6 @@ fn run_part(part: i32, input: String) -> Option<Number> {
     println!("{invalid_sum}");
     for line in input.lines() {
         for id_range in line.split(",") {
-            println!();
             if !id_range.trim().is_empty() {
                 if let Some(sum) = validate_range(part, id_range) {
                     invalid_sum += sum;
@@ -30,7 +29,7 @@ fn validate_range(part: i32, id_range: &str) -> Option<i128> {
 
     if let Some(ids) = id_range.split_once("-") {
         let (start, end) = ids;
-        println!("range {start}-{end} ");
+        // println!("range {start}-{end} ");
         match spread(String::from(start), String::from(end)) {
             Err(e) => {
                 eprintln!("{e}");
@@ -45,7 +44,7 @@ fn validate_range(part: i32, id_range: &str) -> Option<i128> {
                     };
                     if is_valid {
                     } else if let Some(iid) = parse_id(&id) {
-                        println!("invalid {id}");
+                        // println!("invalid {id}");
                         invalid_sum += iid as i128;
                     } else {
                         eprint!("Failed to parse {id}");
