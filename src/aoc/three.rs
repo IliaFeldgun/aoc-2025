@@ -23,20 +23,9 @@ fn run_part(part: i32, input: String) -> Option<Number> {
     Some(Number::Int128(sum))
 }
 fn get_max_joltage_2(line: &str, digits: usize) -> Option<i128> {
-    let mut digit_collection: Vec<char> = vec!['0'; digits];
-    let max_line_index = line.len() - digits + 1;
-    for digit_index in 0..(digits - 1) {
-        for (line_index, current_char) in line.chars().enumerate() {
-            // let (max_first, max_second) = get_max_joltage_1_chars(&line[line_index..]);
-            let (max_first, max_second) = get_max_joltage_1_chars(line);
-            digit_collection[digit_index] = max_first;
-            digit_collection[digit_index + 1] = max_second;
-        }
-    }
+    let digit_collection = get_max_joltage(line, digits);
     let mut result = String::from("");
-    for digit in digit_collection {
-        result = format!("{result}{digit}")
-    }
+    result = format!("{result}{digit_collection}");
     match result.trim().parse::<i128>() {
         Err(e) => {
             eprintln!("Failed to parse {result}: {e}");
@@ -46,16 +35,33 @@ fn get_max_joltage_2(line: &str, digits: usize) -> Option<i128> {
     }
 }
 
-fn get_max_joltage_1_chars(line: &str) -> (char, char) {
-    let mut max_first: char = '0';
-    let mut max_second: char = '0';
-    for (index, current_char) in line.chars().enumerate() {
-        if current_char > max_first && index < line.len() - 1 {
-            max_first = current_char;
-            max_second = '0';
-        } else if current_char > max_second {
-            max_second = current_char;
-        }
+fn get_max_joltage(line: &str, digits: usize) -> String {
+    let mut line_clone = line;
+    let mut digit_collection = format!("{:0>digits$}", "");
+    println!("{digit_collection}");
+    let mut max = String::new();
+    for _ in 0..digits {
+        max = format!("{digit_collection}9")
     }
-    (max_first, max_second)
+    let mut min_digit = 0;
+    while !line_clone.is_empty() && digit_collection != max {
+        if let Some(first_in_line) = line_clone.chars().next() {
+            for digit in min_digit..digits {
+                if let Some(max_first) = digit_collection.chars().nth(digit) {
+                    if first_in_line > max_first && line_clone.len() >= digits - digit {
+                        let slice: String = digit_collection.chars().take(digit).collect();
+                        digit_collection =
+                            format!("{:0<digits$}", format!("{slice}{first_in_line}"));
+                        if first_in_line == '9' {
+                            min_digit += 1;
+                            break;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        line_clone = &line_clone[1..];
+    }
+    digit_collection
 }
