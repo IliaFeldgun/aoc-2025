@@ -30,7 +30,7 @@ fn validate_range(part: i32, id_range: &str) -> Option<i128> {
     if let Some(ids) = id_range.split_once("-") {
         let (start, end) = ids;
         // println!("range {start}-{end} ");
-        match spread(String::from(start), String::from(end)) {
+        match spread(start, end) {
             Err(e) => {
                 eprintln!("{e}");
                 return None;
@@ -94,7 +94,7 @@ fn is_valid_2(id: &str) -> bool {
     true
 }
 
-fn spread(start: String, end: String) -> Result<Vec<String>, String> {
+fn spread(start: &str, end: &str) -> Result<Vec<String>, String> {
     let mut index;
     match start.parse::<i128>() {
         Err(e) => return Err(format!("{e}")),
@@ -112,6 +112,6 @@ fn spread(start: String, end: String) -> Result<Vec<String>, String> {
     Ok(ids)
 }
 
-fn parse_id(id: &str) -> Option<i128> {
+pub fn parse_id(id: &str) -> Option<i128> {
     id.parse::<i128>().ok()
 }
