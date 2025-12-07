@@ -1,3 +1,4 @@
+use aoc::four::main as main4;
 use aoc::one::main as main1;
 use aoc::three::main as main3;
 use aoc::two::main as main2;
@@ -11,4 +12,5 @@ fn main() {
     main1();
     main2();
     main3();
+    main4();
 }
